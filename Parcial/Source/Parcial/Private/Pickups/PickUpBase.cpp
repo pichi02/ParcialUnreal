@@ -1,7 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "Parcial/Public/Pickups/PickUpBase.h"
+﻿#include "Parcial/Public/Pickups/PickUpBase.h"
 
 
 // Sets default values
@@ -14,12 +11,12 @@ APickUpBase::APickUpBase()
 	RootComponent = PickUpMesh;
 }
 
-bool APickUpBase::GetIsActive()const
+bool APickUpBase::GetIsActive() const
 {
 	return isActive;
 }
 
-void APickUpBase::SetIsActive(bool newBool) 
+void APickUpBase::SetIsActive(bool newBool)
 {
 	isActive = newBool;
 }
