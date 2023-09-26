@@ -32,3 +32,9 @@ void APickUpBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+
+void APickUpBase::OnPickupCollected_Implementation()
+{
+	const FString DebugString = GetName();
+	UE_LOG(LogTemp, Warning, TEXT("We have picked up %s "), *DebugString)
+}
