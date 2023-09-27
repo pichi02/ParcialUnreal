@@ -13,11 +13,16 @@ ABatteryPickUp::ABatteryPickUp()
 void ABatteryPickUp::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void ABatteryPickUp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABatteryPickUp::OnPickupCollected_Implementation()
+{
+	Super::OnPickupCollected_Implementation();
+	Destroy();
 }
