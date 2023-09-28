@@ -12,7 +12,7 @@ UCLASS(config=Game)
 class AParcialCharacter : public ACharacter
 {
 	GENERATED_BODY()
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Collision", meta = (AllowPrivateAccess="true"))
 	class USphereComponent* CollisionSphere;
 	/** Camera boom positioning the camera behind the character */
@@ -22,7 +22,7 @@ class AParcialCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
-	
+
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
@@ -41,11 +41,8 @@ class AParcialCharacter : public ACharacter
 
 public:
 	AParcialCharacter();
-	
 
 protected:
-
-	
 	UFUNCTION(BlueprintCallable)
 	void CollectPickups();
 	/** Called for movement input */
@@ -53,21 +50,38 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
 
-protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+
 	// To add mapping context
 	virtual void BeginPlay();
+
+#pragma region POWER LEVEL
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Power")
+	float basePowerLevel;
+
+	UPROPERTY(VisibleAnywhere, Category="Power")
+	float currentPowerLevel;
+
+public:
+	UFUNCTION(BlueprintPure, Category="Power")
+	float GetBasePowerLevel();
+
+	UFUNCTION(BlueprintPure, Category="Power")
+	float GetCurrentPowerLevel();
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateCurrentPowerLevel(float amount);
+#pragma endregion
 
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-	
+
 	FORCEINLINE class USphereComponent* GetSphereCollision() const { return CollisionSphere; }
 };
-

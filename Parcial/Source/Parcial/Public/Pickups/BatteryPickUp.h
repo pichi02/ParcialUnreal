@@ -18,8 +18,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Power", meta=(BlueprintProtected="true"))
+	float chargeAmount;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void OnPickupCollected_Implementation()override;
+	virtual void OnPickupCollected_Implementation() override;
+
+	float GetChargeAmount();
 };

@@ -56,6 +56,9 @@ AParcialCharacter::AParcialCharacter()
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collider"));
 	CollisionSphere->SetupAttachment(RootComponent);
 	CollisionSphere->SetSphereRadius(200.0f);
+	
+	basePowerLevel = 2500.0f;
+	currentPowerLevel = basePowerLevel;
 }
 
 void AParcialCharacter::CollectPickups()
@@ -92,6 +95,21 @@ void AParcialCharacter::BeginPlay()
 	}
 }
 
+float AParcialCharacter::GetBasePowerLevel()
+{
+	return basePowerLevel;
+}
+
+float AParcialCharacter::GetCurrentPowerLevel()
+{
+	return currentPowerLevel;
+}
+
+void AParcialCharacter::UpdateCurrentPowerLevel(float amount)
+{
+	currentPowerLevel += amount;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -110,7 +128,7 @@ void AParcialCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AParcialCharacter::Look);
 
-		PlayerInputComponent->BindAction("Collect",IE_Pressed,this, &AParcialCharacter::CollectPickups);
+		PlayerInputComponent->BindAction("Collect", IE_Pressed, this, &AParcialCharacter::CollectPickups);
 	}
 }
 
