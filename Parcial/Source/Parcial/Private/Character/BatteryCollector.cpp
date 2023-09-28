@@ -1,7 +1,7 @@
-﻿
-#include "Character/BatteryCollector.h"
+﻿#include "Character/BatteryCollector.h"
 
 #include "Components/SphereComponent.h"
+#include "Pickups/PickUpBase.h"
 
 
 // Sets default values
@@ -18,6 +18,11 @@ ABatteryCollector::ABatteryCollector()
 void ABatteryCollector::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ABatteryCollector::CollectPickups()
+{
+	
 }
 
 // Called every frame

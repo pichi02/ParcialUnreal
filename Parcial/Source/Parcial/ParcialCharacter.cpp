@@ -9,6 +9,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/SphereComponent.h"
+#include "Pickups/PickUpBase.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -18,7 +20,7 @@ AParcialCharacter::AParcialCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-		
+
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -44,11 +46,34 @@ AParcialCharacter::AParcialCharacter()
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	// Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collider"));
+	CollisionSphere->SetupAttachment(RootComponent);
+	CollisionSphere->SetSphereRadius(200.0f);
+}
+
+void AParcialCharacter::CollectPickups()
+{
+	TArray<AActor*> OverLappedActors;
+
+	CollisionSphere->GetOverlappingActors(OverLappedActors);
+
+	for (int i = 0; i < OverLappedActors.Num(); i++)
+	{
+		APickUpBase* OverLappedActor = Cast<APickUpBase>(OverLappedActors[i]);
+
+		if (OverLappedActor && OverLappedActor->GetIsActive() && !OverLappedActor->IsPendingKill())
+		{
+			OverLappedActor->OnPickupCollected();
+			OverLappedActor->SetIsActive(false);
+		}
+	}
 }
 
 void AParcialCharacter::BeginPlay()
@@ -59,7 +84,8 @@ void AParcialCharacter::BeginPlay()
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
+			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
@@ -72,8 +98,8 @@ void AParcialCharacter::BeginPlay()
 void AParcialCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
 		//Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
@@ -84,8 +110,8 @@ void AParcialCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AParcialCharacter::Look);
 
+		PlayerInputComponent->BindAction("Collect",IE_Pressed,this, &AParcialCharacter::CollectPickups);
 	}
-
 }
 
 void AParcialCharacter::Move(const FInputActionValue& Value)
@@ -101,7 +127,7 @@ void AParcialCharacter::Move(const FInputActionValue& Value)
 
 		// get forward vector
 		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	
+
 		// get right vector 
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
@@ -123,7 +149,3 @@ void AParcialCharacter::Look(const FInputActionValue& Value)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
-
-
-
-

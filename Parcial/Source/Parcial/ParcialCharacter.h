@@ -12,7 +12,9 @@ UCLASS(config=Game)
 class AParcialCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Collision", meta = (AllowPrivateAccess="true"))
+	class USphereComponent* CollisionSphere;
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
@@ -43,6 +45,9 @@ public:
 
 protected:
 
+	
+	UFUNCTION(BlueprintCallable)
+	void CollectPickups();
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
@@ -62,5 +67,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	
+	FORCEINLINE class USphereComponent* GetSphereCollision() const { return CollisionSphere; }
 };
 
