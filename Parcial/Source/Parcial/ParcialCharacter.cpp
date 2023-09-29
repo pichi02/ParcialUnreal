@@ -106,6 +106,7 @@ void AParcialCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+	
 }
 
 float AParcialCharacter::GetBasePowerLevel()
