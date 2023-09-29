@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/SphereComponent.h"
+#include "Pickups/BatteryPickUp.h"
 #include "Pickups/PickUpBase.h"
 
 
@@ -56,7 +57,7 @@ AParcialCharacter::AParcialCharacter()
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collider"));
 	CollisionSphere->SetupAttachment(RootComponent);
 	CollisionSphere->SetSphereRadius(200.0f);
-	
+
 	basePowerLevel = 2500.0f;
 	currentPowerLevel = basePowerLevel;
 }
@@ -66,7 +67,7 @@ void AParcialCharacter::CollectPickups()
 	TArray<AActor*> OverLappedActors;
 
 	CollisionSphere->GetOverlappingActors(OverLappedActors);
-
+	float cachedPowerLevel = 0;
 	for (int i = 0; i < OverLappedActors.Num(); i++)
 	{
 		APickUpBase* OverLappedActor = Cast<APickUpBase>(OverLappedActors[i]);
@@ -74,8 +75,20 @@ void AParcialCharacter::CollectPickups()
 		if (OverLappedActor && OverLappedActor->GetIsActive() && !OverLappedActor->IsPendingKill())
 		{
 			OverLappedActor->OnPickupCollected();
+
+			ABatteryPickUp* battery = Cast<ABatteryPickUp>(OverLappedActor);
+
+			if (battery)
+			{
+				cachedPowerLevel += battery->GetChargeAmount();
+			}
+
 			OverLappedActor->SetIsActive(false);
 		}
+	}
+	if (cachedPowerLevel > 0)
+	{
+		UpdateCurrentPowerLevel(cachedPowerLevel);
 	}
 }
 

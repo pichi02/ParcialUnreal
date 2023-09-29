@@ -13,7 +13,15 @@ class AParcialGameMode : public AGameModeBase
 
 public:
 	AParcialGameMode();
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Power")
+	float delayTime;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Power")
+	float decayAmount;
+
+	virtual void BeginPlay() override;
+
+	void StartPowerLevelDecay();
 };
-
-
-
