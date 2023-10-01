@@ -47,6 +47,7 @@ void AParcialGameMode::BeginPlay()
 	if (mainHUDClass)
 	{
 		activeWidget = CreateWidget<UUserWidget>(GetWorld(), mainHUDClass);
+		activeWidget->AddToViewport();
 	}
 }
 
