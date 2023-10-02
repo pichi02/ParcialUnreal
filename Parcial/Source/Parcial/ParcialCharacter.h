@@ -56,6 +56,7 @@ protected:
 
 	// To add mapping context
 	virtual void BeginPlay();
+	virtual void Tick(float DeltaSeconds) override;
 
 #pragma region POWER LEVEL
 
@@ -66,6 +67,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Power")
 	float currentPowerLevel;
 
+	UPROPERTY(VisibleAnywhere, Category="Power")
+	bool isAlive;
+
+	UPROPERTY(VisibleAnywhere, Category="Power")
+	bool win;
+
 public:
 	UFUNCTION(BlueprintPure, Category="Power")
 	float GetBasePowerLevel();
@@ -73,11 +80,22 @@ public:
 	UFUNCTION(BlueprintPure, Category="Power")
 	float GetCurrentPowerLevel();
 
+	UFUNCTION(BlueprintPure)
+	bool GetWin();
+
+	UFUNCTION(BlueprintCallable)
+	void SetWin(bool newBool);
+
+	UFUNCTION(BlueprintPure)
+	bool GetIsAlive();
+
 	UFUNCTION(BlueprintCallable)
 	void UpdateCurrentPowerLevel(float amount);
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Power")
+	void OnZeroPower();
 #pragma endregion
 
-public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/

@@ -60,6 +60,8 @@ AParcialCharacter::AParcialCharacter()
 
 	basePowerLevel = 2500.0f;
 	currentPowerLevel = basePowerLevel;
+	isAlive = true;
+	win = false;
 }
 
 void AParcialCharacter::CollectPickups()
@@ -106,7 +108,20 @@ void AParcialCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-	
+}
+
+void AParcialCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (currentPowerLevel <= 0)
+	{
+		if (isAlive)
+		{
+			isAlive = false;
+			OnZeroPower();
+		}
+	}
 }
 
 float AParcialCharacter::GetBasePowerLevel()
@@ -117,6 +132,21 @@ float AParcialCharacter::GetBasePowerLevel()
 float AParcialCharacter::GetCurrentPowerLevel()
 {
 	return currentPowerLevel;
+}
+
+bool AParcialCharacter::GetWin()
+{
+	return win;
+}
+
+void AParcialCharacter::SetWin(bool newBool)
+{
+	win = newBool;
+}
+
+bool AParcialCharacter::GetIsAlive()
+{
+	return isAlive;
 }
 
 void AParcialCharacter::UpdateCurrentPowerLevel(float amount)

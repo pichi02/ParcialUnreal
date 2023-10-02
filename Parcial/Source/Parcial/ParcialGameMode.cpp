@@ -57,6 +57,9 @@ void AParcialGameMode::StartPowerLevelDecay()
 
 	if (character && character->GetCurrentPowerLevel() > 0.0f)
 	{
-		character->UpdateCurrentPowerLevel(-decayAmount);
+		if (!character->GetWin() && character->GetIsAlive())
+		{
+			character->UpdateCurrentPowerLevel(-decayAmount);
+		}
 	}
 }
